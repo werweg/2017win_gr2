@@ -13,3 +13,27 @@
 #Do your best, show off with good, clean, well structured code - this is more important than number of features.
 #After you finish, be sure to UPLOAD this (add, commit, push) to the remote repository.
 #Good Luck
+
+#! /usr/bin/env python2.7
+import random
+
+#first value
+mu=90
+sigma=20
+angle=random.gauss(mu, sigma)
+
+#turbulence value in every iteration
+turbulence_mu=0
+turbulence_sigma=2
+def getTurbulence():
+	return random.gauss(turbulence_mu, turbulence_sigma)
+
+print "First orientation: " + str(angle)
+#90 degrees is desired value
+
+while True:
+	correction=(90-angle)*0.5
+	angle+=correction
+	angle+=getTurbulence()
+	print "Orientation: " + str(angle)
+
