@@ -16,24 +16,35 @@
 
 #! /usr/bin/env python2.7
 import random
+import time
 
-#first value
-mu=90
-sigma=20
-angle=random.gauss(mu, sigma)
+class Flight():
+	def __init__(self):
+		self.mu=90
+		self.sigma=20
 
-#turbulence value in every iteration
-turbulence_mu=0
-turbulence_sigma=2
-def getTurbulence():
-	return random.gauss(turbulence_mu, turbulence_sigma)
+		self.turbulence_mu=0
+		self.turbulence_sigma=2
 
-print "First orientation: " + str(angle)
-#90 degrees is desired value
+		self.angle=random.gauss(self.mu, self.sigma)
+		self.desired_angle=90
+		self.correction_fraction=0.5
 
-while True:
-	correction=(90-angle)*0.5
-	angle+=correction
-	angle+=getTurbulence()
-	print "Orientation: " + str(angle)
+	def addCorrection(self):
+		correction=(self.desired_angle-self.angle)*self.correction_fraction
+		self.angle+=correction
 
+	def addTurbulence(self):
+		self.angle+=random.gauss(self.turbulence_mu, self.turbulence_sigma)
+
+	def simulation(self):
+		print '%s %f'%('Initial angle: ', self.angle)
+		while True:
+			time.sleep(1)
+			self.addCorrection()
+			self.addTurbulence()
+			print '%s %f'%('Corrected angle: ', self.angle)
+
+
+flight=Flight()
+flight.simulation()
