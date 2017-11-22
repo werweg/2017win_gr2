@@ -18,33 +18,52 @@
 import random
 import time
 
+class Plane_position():
+
+    def __init__(self):
+        self.mu = 90
+        self.sigma = 20
+        self.angle = random.gauss(self.mu, self.sigma)
+
+    def __str__(self):
+        return '%s %f' % ('Current angle: ', self.angle)
+
+    def get_angle(self):
+        return self.angle
+
+    def update_angle(self, diff):
+        self.angle += diff
+
+
 class Flight():
-	def __init__(self):
-		self.mu=90
-		self.sigma=20
 
-		self.turbulence_mu=0
-		self.turbulence_sigma=2
+    def __init__(self):
+        self.position = Plane_position()
+        self.turbulence_mu = 0
+        self.turbulence_sigma = 2
+        self.correction_fraction = 0.5
+        self.desired_angle = 90
 
-		self.angle=random.gauss(self.mu, self.sigma)
-		self.desired_angle=90
-		self.correction_fraction=0.5
+    def add_correction(self):
+        correction = (self.desired_angle - self.position.get_angle())*self.correction_fraction
+        self.position.update_angle(correction)
 
-	def addCorrection(self):
-		correction=(self.desired_angle-self.angle)*self.correction_fraction
-		self.angle+=correction
+    def add_turbulence(self):
+        turbulence = random.gauss(self.turbulence_mu, self.turbulence_sigma)
+        self.position.update_angle(turbulence)
 
-	def addTurbulence(self):
-		self.angle+=random.gauss(self.turbulence_mu, self.turbulence_sigma)
+    def single_step(self):
+        time.sleep(1)
+        self.add_correction()
+        self.add_turbulence()
+        print self.position
 
-	def simulation(self):
-		print '%s %f'%('Initial angle: ', self.angle)
-		while True:
-			time.sleep(1)
-			self.addCorrection()
-			self.addTurbulence()
-			print '%s %f'%('Corrected angle: ', self.angle)
+    def simulation(self):
+        while True:
+            self.single_step()
 
 
-flight=Flight()
-flight.simulation()
+if __name__ == "__main__":
+
+    flight = Flight()
+    flight.simulation()
